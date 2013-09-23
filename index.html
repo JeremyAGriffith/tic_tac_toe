@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>3 jQuery - ninja</title>
+
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		#tic_tac_toe{
+			width: 300px;
+			height: 300px;
+			border-collapse: collapse;
+		}
+			#tic_tac_toe td{
+				width: 90px;
+				height: 90px;
+				border: 1px solid #aaaaaa;
+				border-collapse: collapse;
+			}
+
+	</style>
+
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+	<script type="text/javascript">
+		$(document).ready(function(){
+			var board = [["","",""],["","",""],["","",""]];
+			var turn = 0;
+			var winner = 0;
+
+			display_turn(turn);
+
+			$('td').click(function(){
+				var col = $(this).attr("id");
+				var row = $(this).parent().attr("id");
+				if ($(this).html() === "" && !winner){
+					if (turn%2){
+						$(this).html("X");
+						board[row][col] = "X";
+					}else{
+						$(this).html("O");
+						board[row][col] = "O";
+					}
+					turn++;
+					display_turn(turn);
+
+					winner = game_over($(this).attr("id"), $(this).parent().attr("id"), $(this).html());
+					if (winner != 0){
+						$('#results').html("Game Over!!!<br />Player "+winner+" wins");
+					}
+				}
+			});
+
+			function game_over (col, row, player) {
+				var result = player == "O" ? 1 : 2;
+				// console.log(col+row+player);
+				// vertically
+				for (var i = 0; i < 3; i++) {
+					if (board[i][col] != player){
+						result = 0;
+					}
+				}
+				// winner
+				if (result) return result;
+				// check horizontally
+				for (var j = 0; j < 3; j++) {
+					if (board[row][j] != player){
+						return 0;
+					}
+				}
+				// winner
+				if (result) return result;
+			}
+
+			function display_turn (n) {
+				if (n%2){
+					$('#results').html("Player 2's turn");
+				}else{
+					$('#results').html("Player 1's turn");
+				}
+			}
+
+		});
+	</script>
+</head>
+<body>
+	<table id="tic_tac_toe">
+		<tr id="0">
+			<td id="0"></td>
+			<td id="1"></td>
+			<td id="2"></td>
+		</tr>
+		<tr id="1">
+			<td id="0"></td>
+			<td id="1"></td>
+			<td id="2"></td>
+		</tr>
+		<tr id="2">
+			<td id="0"></td>
+			<td id="1"></td>
+			<td id="2"></td>
+		</tr>
+	</table>
+	<p id="results">
+	</p>
+</body>
+</html>
