@@ -2,14 +2,18 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>3 jQuery - ninja</title>
+	<title>jQuery - Tic Tac Toe</title>
 
+	<link href='http://fonts.googleapis.com/css?family=Permanent+Marker' rel='stylesheet' type='text/css'>
 	<style type="text/css">
 		*{
 			margin: 0;
 			padding: 0;
 		}
+
 		#tic_tac_toe{
+			font-family: 'Permanent Marker', cursive; font-size: 48px;
+			text-align: center;
 			width: 300px;
 			height: 300px;
 			border-collapse: collapse;
@@ -21,10 +25,16 @@
 				border-collapse: collapse;
 			}
 
+		#results { font-family: "Helvetica", sans-serif; font-size: 38px;
+				   margin-top: 20px; }
+
+		.controls { margin-top: 50px;
+					width: 260px; padding-left: 75px;
+					font-family: "helvetica", sans-serif; }
+			.controls p { margin: 0; }
 	</style>
 
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-
 	<script type="text/javascript">
 		$(document).ready(function(){
 			var board = [["","",""],["","",""],["","",""]];
@@ -34,8 +44,8 @@
 			display_turn(turn);
 
 			$('td').click(function(){
-				var col = $(this).attr("id");
-				var row = $(this).parent().attr("id");
+				var col = $(this).attr("data");
+				var row = $(this).parent().attr("data");
 				if ($(this).html() === "" && !winner){
 					if (turn%2){
 						$(this).html("X");
@@ -47,32 +57,54 @@
 					turn++;
 					display_turn(turn);
 
-					winner = game_over($(this).attr("id"), $(this).parent().attr("id"), $(this).html());
-					if (winner != 0){
+					winner = game_over(col, row, $(this).html());
+					if (winner){
 						$('#results').html("Game Over!!!<br />Player "+winner+" wins");
 					}
 				}
 			});
 
 			function game_over (col, row, player) {
-				var result = player == "O" ? 1 : 2;
-				// console.log(col+row+player);
+				var result;
+				var winner = (player == "O") ? 1 : 2;
+				console.log(row+col+player);
 				// vertically
-				for (var i = 0; i < 3; i++) {
-					if (board[i][col] != player){
-						result = 0;
+				for (var dir = 0; dir < 3; dir++){
+					switch (dir){
+						// VERTICAL
+						case 0:
+						result = true;
+						for (var i = 0; i < 3; i++) {
+							if (board[i][col] != player)
+								result = false;
+						}
+						break;
+						// HORIZONTAL
+						case 1:
+						result = true;
+						for (i = 0; i < 3; i++) {
+							if (board[row][i] != player)
+								result = false;
+						}
+						break;
+						// DIAG
+						case 2:
+						result = true;
+						for (i = 0; i < 3; i++) {
+							if (board[i][i] != player)
+								result = false;
+						}
+						if (result) return winner;
+						result = true;
+						var rev_index = 2;
+						for (i = 0; i < 3; i++) {
+							if (board[i][rev_index--] != player)
+								return false;
+						}
+						break;
 					}
+					if (result)	return winner;
 				}
-				// winner
-				if (result) return result;
-				// check horizontally
-				for (var j = 0; j < 3; j++) {
-					if (board[row][j] != player){
-						return 0;
-					}
-				}
-				// winner
-				if (result) return result;
 			}
 
 			function display_turn (n) {
@@ -88,23 +120,27 @@
 </head>
 <body>
 	<table id="tic_tac_toe">
-		<tr id="0">
-			<td id="0"></td>
-			<td id="1"></td>
-			<td id="2"></td>
+		<tr data="0">
+			<td data="0"></td>
+			<td data="1"></td>
+			<td data="2"></td>
 		</tr>
-		<tr id="1">
-			<td id="0"></td>
-			<td id="1"></td>
-			<td id="2"></td>
+		<tr data="1">
+			<td data="0"></td>
+			<td data="1"></td>
+			<td data="2"></td>
 		</tr>
-		<tr id="2">
-			<td id="0"></td>
-			<td id="1"></td>
-			<td id="2"></td>
+		<tr data="2">
+			<td data="0"></td>
+			<td data="1"></td>
+			<td data="2"></td>
 		</tr>
 	</table>
 	<p id="results">
 	</p>
+	<div class="controls">
+		<h2>Controls</h2>
+		<p><em>click the squares</em> -- X or O is added to that respective square</p>
+	</div>
 </body>
 </html>
